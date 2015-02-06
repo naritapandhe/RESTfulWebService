@@ -20,13 +20,6 @@ import org.json.JSONArray;
 @Path("/")
 public class MovieREST {
 	
-	 // This method is called if TEXT_PLAIN is request
-	  @GET
-	  @Produces(MediaType.TEXT_PLAIN)
-	  public String sayPlainTextHello() {
-	    return "Hello Jersey";
-	  }
-	  
 	  @GET()
 		@Path("movies")
 		@Produces(MediaType.APPLICATION_JSON)
