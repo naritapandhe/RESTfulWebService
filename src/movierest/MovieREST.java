@@ -169,4 +169,73 @@ public class MovieREST {
 	  	}
 
 
+	  @GET()
+	  	@Path("movies/genre")
+	  	@Produces(MediaType.APPLICATION_JSON)
+	  	public String getAllGenres() {
+	  		String output=null;
+	  		String outputResult=null;
+	  		try{
+	  		
+	  		URL url = new URL("http://api.themoviedb.org/3/genre/movie/list?api_key=bbfb233a717e24474c6f807493956161");
+	  		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	  		conn.setRequestMethod("GET");
+	  		
+	  		if (conn.getResponseCode() != 200) {
+	  			throw new RuntimeException("Failed : HTTP error code : "
+	  					+ conn.getResponseCode());
+	  		}else{
+	   
+	  		BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+	  		while ((output = br.readLine()) != null) {
+	  				outputResult=output; 
+	  				 
+	  			}
+	  		}
+	  			
+	  		conn.disconnect();
+	  			
+	  		}catch(Exception e){
+	  			
+	  			e.printStackTrace();
+	  		}
+	   
+	  		return outputResult;
+	  	}
+	  
+	  
+	    @GET()
+	  	@Path("movies/genre/{genreId}")
+	  	@Produces(MediaType.APPLICATION_JSON)
+	  	public String getMoviesByGenre(@PathParam("genreId") int genreId) {
+	  		String output=null;
+	  		String outputResult=null;
+	  		try{
+	  		
+	  		URL url = new URL("http://api.themoviedb.org/3/genre/"+genreId+"/movies?api_key=bbfb233a717e24474c6f807493956161");
+	  		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	  		conn.setRequestMethod("GET");
+	  		
+	  		if (conn.getResponseCode() != 200) {
+	  			throw new RuntimeException("Failed : HTTP error code : "
+	  					+ conn.getResponseCode());
+	  		}else{
+	   
+	  		BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+	  		while ((output = br.readLine()) != null) {
+	  				outputResult=output; 
+	  				 
+	  			}
+	  		}
+	  			
+	  		conn.disconnect();
+	  			
+	  		}catch(Exception e){
+	  			
+	  			e.printStackTrace();
+	  		}
+	   
+	  		return outputResult;
+	  	}
+
 }
