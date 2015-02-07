@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,7 +20,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.codehaus.jettison.json.JSONObject;
+
+import com.sun.jersey.api.view.Viewable;
+
 import java.sql.*;
 
 @Path("/")
@@ -67,6 +72,13 @@ public class MovieREST {
 		return outputResult;
 				
 	}
+	
+	@GET
+    @Path("/index")
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable indexPage() {
+        return new Viewable("/MovieForm.html", null);
+    }
 	/**
 	 * Function to return the list of movies
 	 * currently playing.
@@ -110,6 +122,7 @@ public class MovieREST {
 		
 		//Declaring required variables
 		String outputResult = null;
+		JSONObject jsonObject=new JSONObject();
 		try {
 			
 			//Build the required API URI
@@ -118,13 +131,15 @@ public class MovieREST {
 			
 			//Execute the required API
 			outputResult=this.executeApi(apiURI, apiKey);
+			JSONObject jObject  = new JSONObject(outputResult); 
+			jsonObject.put("results",jObject);
 			
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
-		return outputResult;
+		return jsonObject.toString();
 
 	}
 	
@@ -140,6 +155,7 @@ public class MovieREST {
 	public String getMoviesInTheatres() {
 		//Declaring required variables
 		String outputResult = null;
+		JSONObject jsonObject=new JSONObject();
 		try {
 
 			//Retrieve the current date
@@ -267,17 +283,12 @@ public class MovieREST {
 		int outputMovieId = 0;
 		String jsonObj = null;
 		try {
-			/*String url = "jdbc:mysql://127.0.0.1:3306/";
+			String url = "jdbc:mysql://127.0.0.1:3306/";
 			String dbName = "movies";
 			String driver = "com.mysql.jdbc.Driver";
 			String userName = "root";
-			String password = "root";*/
-			String url = "jdbc:mysql://uml.cs.uga.edu:3306/";
-			String dbName = "eit6";
-			String driver = "com.mysql.jdbc.Driver";
-			String userName = "eit6";
-			String password = "overload";
-
+			String password = "root";
+			
 
 			Class.forName(driver).newInstance();
 			Connection conn = DriverManager.getConnection(url + dbName,
@@ -328,12 +339,12 @@ public class MovieREST {
 		String jsonObj = null;
 		JSONObject obj = new JSONObject();
 		try {
-			String url = "jdbc:mysql://uml.cs.uga.edu:3306/";
-			String dbName = "eit6";
+			String url = "jdbc:mysql://127.0.0.1:3306/";
+			String dbName = "movies";
 			String driver = "com.mysql.jdbc.Driver";
-			String userName = "eit6";
-			String password = "overload";
-
+			String userName = "root";
+			String password = "root";
+			
 			Class.forName(driver).newInstance();
 			Connection conn = DriverManager.getConnection(url + dbName,
 					userName, password);
@@ -341,7 +352,8 @@ public class MovieREST {
 			String query = "update moviesInfo"
 					+ " set movieRating = " + movieData.movieRating 
 					+ " where movieId= " + movieData.movieId ;
-			System.out.println(query);
+
+			
 			int insertStatus = st.executeUpdate(query);
 			if (insertStatus != 0) {
 				ResultSet res = st.executeQuery("select * from moviesInfo where movieId=" + movieData.movieId);

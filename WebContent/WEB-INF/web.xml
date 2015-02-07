@@ -12,10 +12,23 @@
 		<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
 		<param-value>true</param-value>
 	</init-param>
-    <load-on-startup>1</load-on-startup>
+	<init-param>
+    	<param-name>jersey.config.server.provider.classnames</param-name>
+    	<param-value>com.sun.jersey.server.mvc.jsp.JspMvcFeature</param-value>
+	</init-param>
+	<init-param>
+        <param-name>jersey.config.server.mvc.templateBasePath.jsp</param-name>
+        <param-value>/WEB-INF/</param-value>
+    </init-param>
+	<load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>Jersey Movie REST Service</servlet-name>
     <url-pattern>/api/*</url-pattern>
   </servlet-mapping>
-</web-app>
+ 
+  <welcome-file-list>
+    <welcome-file>MovieForm.html</welcome-file>
+  </welcome-file-list>
+  
+  </web-app>

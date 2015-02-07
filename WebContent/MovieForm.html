@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+       $('#submitRequest').click(function(){
+    	var output="";
+        var endpoint=$('#endpoint').val();
+        var method=$('#method').val();
+        var payload=$('#payload').val();
+
+        var element=endpoint.substr(endpoint.lastIndexOf('/') + 1);
+    	var endpointArray = ["theatres","genre"];
+    
+       if(method=="GET") {
+			$.ajax({
+	            type: method,
+	            url: endpoint,
+	            dataType: "json",
+	            success: function(data){
+		            if($.inArray(element, endpointArray) == -1){
+		            	 $.each(data.results,function(i,j){
+			                    output+=JSON.stringify(j);
+			             });
+			        }else{
+			        	$.each(data,function(i,j){
+		                    output+=JSON.stringify(j);
+		                });
+				    }
+	               
+	                $('#apiOutput').text(output);
+	                
+	            }
+	        });
+		}else{
+			$.ajax({
+	            type: method,
+	            url: endpoint,
+	            dataType: "json",
+	            data:payload,
+	            contentType: "application/json",
+	            success: function(data){
+		            $('#apiOutput').text(JSON.stringify(data));
+		        }
+	        });
+		}
+        
+        
+    });
+
+
+});
+</script>
+</head>
+<body>
+
+	<form id="request">
+		
+		<label>API:</label> <input type="text" id="endpoint"
+			style="width: 400px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <label>Method:</label>
+		
+		<select id="method">
+			<option value="GET">GET</option>
+			<option value="POST">POST</option>
+			<option value="PUT">PUT</option>
+		</select> <br />
+		
+		<br /> <label>Payload (for POST/PUT):</label> <br />
+		<textarea rows="5" columns=20 style="width: 500px;" id="payload"></textarea>
+		
+		<br />
+		<br /> <input type="button" value="SUBMIT" id="submitRequest">
+	</form>
+	<hr />
+	<label><b>OUTPUT:</b></label>
+	<br />
+	<br />
+	<div id="apiOutput"></div>
+</body>
+</html>
