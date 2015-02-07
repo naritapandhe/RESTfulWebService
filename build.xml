@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="make_war" name="MovieREST">
+
+	<!-- Declaring all the required properties -->
+    <property name="name" 		value="MovieREST"/>
+	<property name="src" 		location="src"/>
+	<property name="lib"  		location="WebContent/WEB-INF/lib"/>
+	<property name="build" 		location="classes"/>
+	<property name="wardir" 	location="war" />
+    <property name="warfile" 	location="${wardir}/${ant.project.name}.war" /> 
+    <!-- <property name="jdkhome"    value="/opt/jdk1.7.0_11/bin" /> -->   
+	 <property name="jdkhome"    value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin/" />
+     
+
+	<!-- Old class / war files to be cleaned -->
+	<target name="clean" description="Clean output directories">
+        <delete>
+            <fileset dir="${build}">
+                <include name="**/*.class"/>
+            </fileset>
+        </delete>
+        <delete dir="${wardir}" quiet="true"/>
+    </target>
+
+	<!-- Call to create directories if they do not exists -->
+	<target name="init" depends="clean" description="Creates directories if not exists">
+		<!-- Create directories if needed -->
+		<mkdir dir="${build}"/>
+		<mkdir dir="${wardir}"/>
+	</target>
+	
+	<!-- Call to compile all the java files and external libraries -->
+	<target name="compile" depends="init" description="Compiles the source" >
+		<mkdir dir="${build}"/>
+	
+		<!-- Compile the java code from ${src} and copy the class files to ${build} directory -->
+		<javac debug="true" srcdir="${src}" destdir="${build}" 
+		 classpath="${lib}/asm-3.1.jar:
+					${lib}/jackson-core-asl-1.9.2.jar:
+					${lib}/jackson-jaxrs-1.9.2.jar:
+					${lib}/jackson-mapper-asl-1.9.2.jar:
+					${lib}/jackson-xc-1.9.2.jar:
+					${lib}/java-json.jar:
+					${lib}/jersey-client-1.14.jar:
+					${lib}/jersey-core-1.14.jar:
+					${lib}/jersey-json-1.14.jar:
+					${lib}/jersey-server-1.14.jar:
+					${lib}/jersey-servlet-1.14.jar:
+					${lib}/jettison-1.1.jar:
+					${lib}/jsr311-api-1.1.1.jar:
+					${lib}/mysql-connector-java-5.1.34-bin.jar:
+					classes/"
+		/>
+	</target>
+	 
+    <!-- Call to create a jar file of the program -->
+    <target name="make_war" depends="compile" description="Builds the war file of the project">
+           
+           <!-- Location of where the java os to created -->
+           <jar destfile="${warfile}" basedir="${build}">
+              <fileset dir="${build}">
+                <include name="**/*.class"/>
+              </fileset>
+             
+             <!-- Grouping the lib folder to include .jar files  -->
+             <zipgroupfileset dir="${lib}" includes="*.jar" excludes="*.config"/>
+             
+             <!-- Required to specify which is the MainClass, since there are multiple jars  -->
+             <manifest>
+           		<attribute name="Main-Class" value="MovieREST"/>
+       		 </manifest>        
+           </jar>
+     </target>
+	
+	
+</project>

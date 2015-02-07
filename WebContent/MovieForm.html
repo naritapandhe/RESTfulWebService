@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="jquery-1.11.2.min.js"></script>
 <script>
 $(document).ready(function(){
        $('#submitRequest').click(function(){
-    	var output="";
-        var endpoint=$('#endpoint').val();
+
+       	var output="";
+
+		/*
+		* Read the values from the form
+		*
+		*/
+		var endpoint=$('#endpoint').val();
         var method=$('#method').val();
         var payload=$('#payload').val();
 
+        
         var element=endpoint.substr(endpoint.lastIndexOf('/') + 1);
     	var endpointArray = ["theatres","genre"];
-    
-       if(method=="GET") {
+
+        //Check if Method = GET
+        if(method=="GET") {
 			$.ajax({
 	            type: method,
 	            url: endpoint,
 	            dataType: "json",
 	            success: function(data){
+	            	//Retrieve the response
 		            if($.inArray(element, endpointArray) == -1){
+			             
 		            	 $.each(data.results,function(i,j){
 			                    output+=JSON.stringify(j);
 			             });
@@ -34,6 +44,7 @@ $(document).ready(function(){
 	            }
 	        });
 		}else{
+			//Check if Method = POST, PUT 
 			$.ajax({
 	            type: method,
 	            url: endpoint,
@@ -41,6 +52,7 @@ $(document).ready(function(){
 	            data:payload,
 	            contentType: "application/json",
 	            success: function(data){
+	            	//Retrieve the response
 		            $('#apiOutput').text(JSON.stringify(data));
 		        }
 	        });
