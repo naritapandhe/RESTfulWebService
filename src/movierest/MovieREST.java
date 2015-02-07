@@ -30,24 +30,17 @@ public class MovieREST {
 	private static final String TMDBAPIKEY="2ace9nn4kqudu3r3nsfzfudg";
 	
 	
-	/**
-	 * Function to return the list of movies
-	 * currently playing.
-	 * 
-	 * @return stringified JSON
-	 */
-	@GET()
-	@Path("/movies")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getMoviesNowPlaying() {
-		
+	
+	public String executeApi(String apiURI, String apiKey){
 		//Declaring required variables
 		String output = null;
 		String outputResult = null;
-		try {
-
+		String concatenatedUrl=null;
+		try{
+			
+			concatenatedUrl=apiURI+apiKey;
 			//Connecting to the TheMovieDB API
-			URL url = new URL("http://api.themoviedb.org/3/movie/now_playing?api_key="+THEMOVIEDBAPIKEY);
+			URL url = new URL(concatenatedUrl);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 
@@ -66,7 +59,36 @@ public class MovieREST {
 			}
 
 			conn.disconnect();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return outputResult;
+				
+	}
+	/**
+	 * Function to return the list of movies
+	 * currently playing.
+	 * 
+	 * @return stringified JSON
+	 */
+	@GET()
+	@Path("/movies")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getMoviesNowPlaying() {
+		
+		//Declaring required variables
+		String outputResult = null;
+		try {
 
+			//Build the required API URI
+			String apiURI="http://api.themoviedb.org/3/movie/now_playing?";
+			String apiKey="api_key="+THEMOVIEDBAPIKEY;
+			
+			//Execute the required API
+			outputResult=this.executeApi(apiURI, apiKey);
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -85,30 +107,18 @@ public class MovieREST {
 	@Path("/movies/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMovie(@PathParam("id") String id) {
-
-		String output = null;
+		
+		//Declaring required variables
 		String outputResult = null;
 		try {
-			//Connecting to the TheMovieDB API
-			URL url = new URL("http://api.themoviedb.org/3/movie/" + id + "?api_key="+THEMOVIEDBAPIKEY);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			} else {
-				//Initiating GET request and retrieving that movie's details
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						(conn.getInputStream())));
-				while ((output = br.readLine()) != null) {
-					outputResult = output;
-
-				}
-			}
-
-			conn.disconnect();
-
+			
+			//Build the required API URI
+			String apiURI="http://api.themoviedb.org/3/movie/" + id + "?";
+			String apiKey="api_key="+THEMOVIEDBAPIKEY;
+			
+			//Execute the required API
+			outputResult=this.executeApi(apiURI, apiKey);
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -128,36 +138,22 @@ public class MovieREST {
 	@Path("/movies/theatres")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMoviesInTheatres() {
-		String output = null;
+		//Declaring required variables
 		String outputResult = null;
 		try {
 
+			//Retrieve the current date
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = new Date();
 			String dt = dateFormat.format(date).toString();
 			
-			//Connecting to the TMDB API
-			URL url = new URL("http://data.tmsapi.com/v1/movies/showings?startDate=" + dt + "&zip=30606&api_key="+TMDBAPIKEY);
-
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			} else {
-
-				//Initiating GET request and retrieving the list of movies in local theatre
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						(conn.getInputStream())));
-				while ((output = br.readLine()) != null) {
-					outputResult = output;
-
-				}
-			}
-
-			conn.disconnect();
-
+			//Build the required API URI
+			String apiURI="http://data.tmsapi.com/v1/movies/showings?startDate=" + dt + "&zip=30606";
+			String apiKey="&api_key="+TMDBAPIKEY;
+			
+			//Execute the required API
+			outputResult=this.executeApi(apiURI, apiKey);
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -176,33 +172,21 @@ public class MovieREST {
 	@Path("/movies/search/{title}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMoviesByTitle(@PathParam("title") String title) {
-		String output = null;
+		//Declaring required variables
 		String outputResult = null;
 		try {
 
 			//Connecting to the TheMovieDB API
 			String encodedString = URLEncoder.encode(title, "UTF-8").toString();
-			URL url = new URL("http://api.themoviedb.org/3/search/movie?api_key="+THEMOVIEDBAPIKEY+"&query="+ encodedString);
-
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			} else {
-
-				//Initiating GET request and retrieving the list of movies 
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						(conn.getInputStream())));
-				while ((output = br.readLine()) != null) {
-					outputResult = output;
-
-				}
-			}
-
-			conn.disconnect();
-
+			
+			//Build the required API URI
+			String apiURI="http://api.themoviedb.org/3/search/movie?query="+encodedString;
+			String apiKey="&api_key="+THEMOVIEDBAPIKEY;
+			
+			//Execute the required API
+			outputResult=this.executeApi(apiURI, apiKey);
+			
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -220,31 +204,17 @@ public class MovieREST {
 	@Path("/movies/genre")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getAllGenres() {
-		String output = null;
+		//Declaring required variables
 		String outputResult = null;
 		try {
 
-			//Connecting to the TheMovieDB API
-			URL url = new URL("http://api.themoviedb.org/3/genre/movie/list?api_key="+THEMOVIEDBAPIKEY);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			} else {
-
-				//Initiating GET request and retrieving the list of genre
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						(conn.getInputStream())));
-				while ((output = br.readLine()) != null) {
-					outputResult = output;
-
-				}
-			}
-
-			conn.disconnect();
-
+			//Build the required API URI
+			String apiURI="http://api.themoviedb.org/3/genre/movie/list?";
+			String apiKey="api_key="+THEMOVIEDBAPIKEY;
+			
+			//Execute the required API
+			outputResult=this.executeApi(apiURI, apiKey);
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -263,29 +233,18 @@ public class MovieREST {
 	@Path("/movies/genre/{genreId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMoviesByGenre(@PathParam("genreId") int genreId) {
-		String output = null;
+		//Declaring required variables
 		String outputResult = null;
 		try {
+			
+			//Build the required API URI
+			String apiURI="http://api.themoviedb.org/3/genre/" + genreId + "/movies?";
+			String apiKey="api_key="+THEMOVIEDBAPIKEY;
+			
+			//Execute the required API
+			outputResult=this.executeApi(apiURI, apiKey);
 
-			URL url = new URL("http://api.themoviedb.org/3/genre/" + genreId + "/movies?api_key="+THEMOVIEDBAPIKEY);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			} else {
-
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						(conn.getInputStream())));
-				while ((output = br.readLine()) != null) {
-					outputResult = output;
-
-				}
-			}
-
-			conn.disconnect();
-
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -308,11 +267,17 @@ public class MovieREST {
 		int outputMovieId = 0;
 		String jsonObj = null;
 		try {
-			String url = "jdbc:mysql://127.0.0.1:3306/";
+			/*String url = "jdbc:mysql://127.0.0.1:3306/";
 			String dbName = "movies";
 			String driver = "com.mysql.jdbc.Driver";
 			String userName = "root";
-			String password = "root";
+			String password = "root";*/
+			String url = "jdbc:mysql://uml.cs.uga.edu:3306/";
+			String dbName = "eit6";
+			String driver = "com.mysql.jdbc.Driver";
+			String userName = "eit6";
+			String password = "overload";
+
 
 			Class.forName(driver).newInstance();
 			Connection conn = DriverManager.getConnection(url + dbName,
@@ -363,11 +328,11 @@ public class MovieREST {
 		String jsonObj = null;
 		JSONObject obj = new JSONObject();
 		try {
-			String url = "jdbc:mysql://127.0.0.1:3306/";
-			String dbName = "movies";
+			String url = "jdbc:mysql://uml.cs.uga.edu:3306/";
+			String dbName = "eit6";
 			String driver = "com.mysql.jdbc.Driver";
-			String userName = "root";
-			String password = "root";
+			String userName = "eit6";
+			String password = "overload";
 
 			Class.forName(driver).newInstance();
 			Connection conn = DriverManager.getConnection(url + dbName,
