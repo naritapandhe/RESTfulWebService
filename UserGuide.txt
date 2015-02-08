@@ -1,0 +1,69 @@
+List of APIs:
+
+- You can execute the APIs, from browser, once the project has been deployed in Wildfly.
+- To run the client, after starting the Server, please type the following URL in browser:
+  http://localhost:8080/MovieREST/
+- This will start the Client, using which you can specify what API is to be executed, its methods
+  and the payload to be given.
+
+**** NOTE: For executing the APIs, the database needs to be populated first. ****
+  Inorder to populate the database, please execute the following API, only once
+  Endpoint: http://localhost:8080/MovieREST/api/movies/populate
+  Method: 	GET
+  Payload:	NONE
+
+
+- API to list all the movies:
+  Endpoint: http://localhost:8080/MovieREST/api/movies/
+  Method: 	GET
+  Payload:	NONE
+
+- API to get a specific movie:
+  Endpoint: http://localhost:8080/MovieREST/api/movies/{movieID}
+  Method: 	GET
+  Payload:	NONE
+
+- API to list all the movies and theatres its being showcased at:
+  Endpoint: http://localhost:8080/MovieREST/api/movies/theatres
+  Method: 	GET
+  Payload:	NONE
+
+- API to search movies by its title:
+  Endpoint: http://localhost:8080/MovieREST/api/movies/search/Batman
+  Method: 	GET
+  Payload:	NONE
+
+- API to list all movie genres
+  Endpoint: http://localhost:8080/MovieREST/api/movies/genre
+  Method: 	GET
+  Payload:	NONE
+
+- API to list all movies of a specific genre
+  Endpoint: http://localhost:8080/MovieREST/api/movies/genre/{genreID}
+  Method: 	GET
+  Payload:	NONE
+
+- API to create a movie
+  Endpoint: http://localhost:8080/MovieREST/api/movies
+  Method: 	POST
+  Payload:	This is a sample POST request
+  			{
+  				"movieTitle":"MovieTest",
+  				"movieDescription":"MovieTest Description",
+  				"movieRating":3
+
+  			}
+  			On success, the above POST request will return the movieId
+  			Say the movieId = 324115
+
+- API to rate a movie
+  Endpoint: http://localhost:8080/MovieREST/api/movies/rate
+  Method: 	PUT
+  Payload:	This is a sample PUT request
+  			{
+  				"movieId":324115,
+  				"movieRating":2
+
+  			}
+
+
